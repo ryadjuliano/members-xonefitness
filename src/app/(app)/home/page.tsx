@@ -2,7 +2,6 @@ import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Icon } from "@/components/ui/icon";
 import { Avatar } from "@/components/ui/avatar";
-import { ProfileMenuItem } from "@/components/profile/profile-menu-item";
 import { createClient } from "@/lib/supabase/server";
 import { formatDate, relativeTime } from "@/lib/utils";
 import { MOCK_CHECKIN_STATS, MOCK_MEMBER, MOCK_RECENT_CHECKINS } from "@/lib/mock-data";
@@ -135,16 +134,6 @@ export default async function HomePage() {
         ) : (
           <p className="text-sm text-text-secondary">Kamu belum memiliki paket membership aktif.</p>
         )}
-        <Link
-          href="/home/membership"
-          className="mt-4 inline-flex h-10 w-full items-center justify-center whitespace-nowrap rounded-full bg-primary text-sm font-semibold text-text-on-primary"
-        >
-          {isExpired || daysRemaining === null ? "Beli Paket" : "Perpanjang"}
-        </Link>
-      </Card>
-
-      <Card className="overflow-hidden">
-        <ProfileMenuItem href="/home/membership" icon="bag" label="Beli Paket" />
       </Card>
 
       <div className="grid grid-cols-3 gap-3">

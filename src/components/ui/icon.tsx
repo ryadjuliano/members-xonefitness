@@ -1,7 +1,6 @@
 import type { IconType } from "react-icons";
 import {
   FaArrowUpFromBracket,
-  FaBagShopping,
   FaBell,
   FaBuildingColumns,
   FaCalendarDays,
@@ -38,7 +37,6 @@ import { IoCamera, IoCameraOutline, IoHome, IoHomeOutline, IoPerson, IoPersonOut
 const ICONS = {
   dumbbell: FaDumbbell,
   crown: FaCrown,
-  bag: FaBagShopping,
   fire: FaFire,
   bell: FaBell,
   eye: FaEye,
