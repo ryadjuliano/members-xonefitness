@@ -19,6 +19,12 @@ export async function checkIn(qrCode: string) {
   const memberId = await getCurrentMemberId(supabase);
   if (!memberId) return { error: "Sesi tidak ditemukan, silakan login ulang." };
 
+  // Only gate the check-in itself — a blacklisted member who already
+  // checked in before being flagged can still check out / upload their
+  // selfie for that visit (see uploadCheckinSelfie/checkOut below).
+  const { data: member } = await supabase.from("members").select("is_blacklisted").eq("id", memberId).single();
+  if (member?.is_blacklisted) return { error: "Akun kamu dinonaktifkan untuk check-in. Silakan hubungi staff gym." };
+
   const scanned = qrCode.trim();
   // Case-insensitive on purpose — a printed static QR shouldn't break check-in over
   // capitalization. Compared in JS (not `ilike`) so scanned text with literal
