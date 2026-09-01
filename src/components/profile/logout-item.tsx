@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Icon } from "@/components/ui/icon";
 import { Button } from "@/components/ui/button";
 import { createClient } from "@/lib/supabase/client";
 
 export function LogoutItem() {
-  const router = useRouter();
   const [confirming, setConfirming] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
@@ -15,8 +13,10 @@ export function LogoutItem() {
     setIsLoggingOut(true);
     const supabase = createClient();
     await supabase.auth.signOut();
-    router.push("/login");
-    router.refresh();
+    // Hard navigation — same reasoning as login: this clears auth state, so
+    // a client-side push risks the next page reusing a Router Cache entry
+    // fetched while still signed in.
+    window.location.href = "/login";
   };
 
   if (confirming) {

@@ -1,14 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/ui/icon";
 import { createClient } from "@/lib/supabase/client";
 
 export default function ChangePasswordPage() {
-  const router = useRouter();
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -40,8 +38,10 @@ export default function ChangePasswordPage() {
       return;
     }
 
-    router.push("/home");
-    router.refresh();
+    // Hard navigation — same reasoning as login: this just changed auth
+    // state (must_change_password flag), so a client-side push risks the
+    // middleware evaluating a Router Cache entry from before the change.
+    window.location.href = "/home";
   };
 
   return (
@@ -53,7 +53,7 @@ export default function ChangePasswordPage() {
           </div>
           <h1 className="text-xl font-bold">Buat Password Baru</h1>
           <p className="mt-2 text-sm text-text-secondary">
-            Ini pertama kalinya kamu login. Demi keamanan, buat password baru sebelum melanjutkan.
+            Ini pertama kali kamu login. Demi keamanan, silakan buat password baru sebelum melanjutkan.
           </p>
         </div>
 

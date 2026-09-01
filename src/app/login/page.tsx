@@ -3,7 +3,6 @@
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/ui/icon";
@@ -11,7 +10,6 @@ import { createClient } from "@/lib/supabase/client";
 import { syntheticEmailFor } from "@/lib/utils";
 
 export default function LoginPage() {
-  const router = useRouter();
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -35,8 +33,12 @@ export default function LoginPage() {
       return;
     }
 
-    router.push("/home");
-    router.refresh();
+    // Hard navigation on purpose: right after login, a client-side
+    // router.push() can land on a page still served from the Router Cache
+    // (last computed while logged out), so the middleware's
+    // must-change-password redirect wouldn't see the fresh session either.
+    // A full page load re-evaluates everything against the just-set cookie.
+    window.location.href = "/home";
   };
 
   return (

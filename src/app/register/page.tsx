@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Icon } from "@/components/ui/icon";
@@ -11,7 +10,6 @@ import { syntheticEmailFor } from "@/lib/utils";
 import { registerMember } from "@/lib/actions/auth";
 
 export default function RegisterPage() {
-  const router = useRouter();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
@@ -48,12 +46,13 @@ export default function RegisterPage() {
     setIsSubmitting(false);
     if (signInError) {
       setError("Akun berhasil dibuat, tapi login otomatis gagal. Silakan login manual.");
-      router.push("/login");
+      window.location.href = "/login";
       return;
     }
 
-    router.push("/home");
-    router.refresh();
+    // Hard navigation — same reasoning as login: sign-up just changed auth
+    // state, so a client-side push risks a stale Router Cache entry.
+    window.location.href = "/home";
   };
 
   return (
