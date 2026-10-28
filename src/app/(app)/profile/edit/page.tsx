@@ -12,7 +12,6 @@ import { updateProfile } from "@/lib/actions/profile";
 export default function EditProfilePage() {
   const router = useRouter();
   const member = useMember();
-  const [name, setName] = useState(member.name);
   const [email, setEmail] = useState(member.email ?? "");
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
@@ -24,7 +23,7 @@ export default function EditProfilePage() {
     setSuccess(false);
     setIsSubmitting(true);
 
-    const result = await updateProfile({ name, email });
+    const result = await updateProfile({ email });
     setIsSubmitting(false);
 
     if (result.error) {
@@ -52,7 +51,13 @@ export default function EditProfilePage() {
           </div>
         )}
 
-        <Input label="Nama Lengkap" required value={name} onChange={(e) => setName(e.target.value)} />
+        <div>
+          <label className="mb-2 block text-sm font-medium text-text-secondary">Nama Lengkap</label>
+          <p className="flex min-h-12 items-center rounded-lg border border-gray-300 bg-background-elevated px-4 py-3 text-base text-text-tertiary">
+            {member.name}
+          </p>
+          <p className="mt-1.5 text-xs text-text-tertiary">Nama tidak dapat diubah sendiri. Hubungi admin gym untuk perubahan nama.</p>
+        </div>
         <Input label="Email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="opsional" />
         <div>
           <label className="mb-2 block text-sm font-medium text-text-secondary">No. HP</label>
