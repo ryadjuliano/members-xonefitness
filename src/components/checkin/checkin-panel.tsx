@@ -9,10 +9,24 @@ import { checkIn, checkOut, uploadCheckinSelfie } from "@/lib/actions/checkin";
 import { QrScanner } from "@/components/checkin/qr-scanner";
 import { SelfieCamera } from "@/components/checkin/selfie-camera";
 
-type TodayStatus = { id: number; checkedInAt: string; checkedOutAt: string | null } | null;
-type Step = "idle" | "scanning" | "selfie" | "uploading" | "done-in" | "done-out";
+type TodayStatus = {
+  id: number;
+  checkedInAt: string;
+  checkedOutAt: string | null;
+} | null;
+type Step =
+  | "idle"
+  | "scanning"
+  | "selfie"
+  | "uploading"
+  | "done-in"
+  | "done-out";
 
-export function CheckinPanel({ initialStatus }: { initialStatus: TodayStatus }) {
+export function CheckinPanel({
+  initialStatus,
+}: {
+  initialStatus: TodayStatus;
+}) {
   const router = useRouter();
   const [status, setStatus] = useState(initialStatus);
   const [step, setStep] = useState<Step>("idle");
@@ -33,7 +47,11 @@ export function CheckinPanel({ initialStatus }: { initialStatus: TodayStatus }) 
       setStep("idle");
       return;
     }
-    setStatus({ id: result.data.id, checkedInAt: result.data.checked_in_at, checkedOutAt: null });
+    setStatus({
+      id: result.data.id,
+      checkedInAt: result.data.checked_in_at,
+      checkedOutAt: null,
+    });
     setPendingCheckinId(result.data.id);
     router.refresh();
     setStep("selfie");
@@ -76,9 +94,14 @@ export function CheckinPanel({ initialStatus }: { initialStatus: TodayStatus }) 
           <Icon name="check-circle" size={32} className="text-success" />
         </span>
         <div>
-          <h2 className="text-lg font-bold">{step === "done-in" ? "Check-in Berhasil" : "Check-out Berhasil"}</h2>
+          <h2 className="text-lg font-bold">
+            {step === "done-in" ? "Check-in Berhasil" : "Check-out Berhasil"}
+          </h2>
           <p className="mt-1 text-sm text-text-secondary">
-            {new Date().toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" })}
+            {new Date().toLocaleString("id-ID", {
+              dateStyle: "medium",
+              timeStyle: "short",
+            })}
           </p>
         </div>
         <Button className="w-full" onClick={() => setStep("idle")}>
@@ -93,11 +116,22 @@ export function CheckinPanel({ initialStatus }: { initialStatus: TodayStatus }) 
       <Card className="flex flex-col items-center gap-4 p-6 text-center">
         <div>
           <h2 className="text-lg font-bold">Scan QR Gym</h2>
-          <p className="mt-1 text-sm text-text-secondary">Arahkan kamera ke QR code di meja depan gym.</p>
+          <p className="mt-1 text-sm text-text-secondary">
+            Arahkan kamera ke QR code di meja depan gym.
+          </p>
         </div>
         <QrScanner onDecode={handleQrDecode} onError={(msg) => setError(msg)} />
-        {error && <p className="w-full rounded-lg border border-error/30 bg-error/10 px-4 py-2 text-sm text-error">{error}</p>}
-        <Button className="w-full" variant="outline" onClick={() => setStep("idle")} disabled={isSubmitting}>
+        {error && (
+          <p className="w-full rounded-lg border border-error/30 bg-error/10 px-4 py-2 text-sm text-error">
+            {error}
+          </p>
+        )}
+        <Button
+          className="w-full"
+          variant="outline"
+          onClick={() => setStep("idle")}
+          disabled={isSubmitting}
+        >
           Batal
         </Button>
       </Card>
@@ -109,17 +143,31 @@ export function CheckinPanel({ initialStatus }: { initialStatus: TodayStatus }) 
       <Card className="flex flex-col items-center gap-4 p-6 text-center">
         <div>
           <h2 className="text-lg font-bold">Foto Selfie Absen</h2>
-          <p className="mt-1 text-sm text-text-secondary">Check-in berhasil! Ambil foto selfie untuk melengkapi absensi.</p>
+          <p className="mt-1 text-sm text-text-secondary">
+            Check-in berhasil! Ambil foto selfie untuk melengkapi absensi.
+          </p>
         </div>
         {step === "uploading" ? (
           <div className="flex aspect-square w-full items-center justify-center rounded-2xl bg-background-elevated">
             <p className="text-sm text-text-secondary">Mengunggah foto...</p>
           </div>
         ) : (
-          <SelfieCamera onCapture={handleSelfieCapture} onError={(msg) => setError(msg)} />
+          <SelfieCamera
+            onCapture={handleSelfieCapture}
+            onError={(msg) => setError(msg)}
+          />
         )}
-        {error && <p className="w-full rounded-lg border border-error/30 bg-error/10 px-4 py-2 text-sm text-error">{error}</p>}
-        <Button className="w-full" variant="ghost" onClick={() => setStep("done-in")} disabled={step === "uploading"}>
+        {error && (
+          <p className="w-full rounded-lg border border-error/30 bg-error/10 px-4 py-2 text-sm text-error">
+            {error}
+          </p>
+        )}
+        <Button
+          className="w-full"
+          variant="ghost"
+          onClick={() => setStep("done-in")}
+          disabled={step === "uploading"}
+        >
           Lewati foto
         </Button>
       </Card>
@@ -132,23 +180,37 @@ export function CheckinPanel({ initialStatus }: { initialStatus: TodayStatus }) 
         <Icon name="dumbbell" size={40} className="text-primary" />
       </span>
 
-      {error && <p className="w-full rounded-lg border border-error/30 bg-error/10 px-4 py-2 text-sm text-error">{error}</p>}
+      {error && (
+        <p className="w-full rounded-lg border border-error/30 bg-error/10 px-4 py-2 text-sm text-error">
+          {error}
+        </p>
+      )}
 
       {isCheckedIn ? (
         <>
           <div>
             <p className="text-sm text-text-secondary">Kamu check-in pada</p>
             <p className="text-lg font-bold">
-              {new Date(status!.checkedInAt).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}
+              {new Date(status!.checkedInAt).toLocaleTimeString("id-ID", {
+                hour: "2-digit",
+                minute: "2-digit",
+              })}
             </p>
           </div>
-          <Button className="w-full" variant="outline" onClick={handleCheckOut} disabled={isSubmitting}>
+          <Button
+            className="w-full"
+            variant="outline"
+            onClick={handleCheckOut}
+            disabled={isSubmitting}
+          >
             {isSubmitting ? "Memproses..." : "Check-Out"}
           </Button>
         </>
       ) : (
         <>
-          <p className="text-sm text-text-secondary">Kamu belum check-in hari ini.</p>
+          <p className="text-sm text-text-secondary">
+            Kamu belum check-in hari ini.
+          </p>
           <Button
             className="w-full"
             onClick={() => {
